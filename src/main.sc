@@ -1,23 +1,25 @@
 require: slotfilling/slotFilling.sc
   module = sys.zb-common
+require: dateTime/dateTime.sc
+  module = sys.zb-common
 theme: /
 
     state: Start
         q!: $regex</start>
         a: Начнём.
 
-    state: Hello
-        intent!: /привет
-        a: Привет привет
+    state: Date
+        q!: *(дат*)*
+        script:
+            $temp.date = currentDate();
+        a: {{$temp.date.format("DD.MM.YYYY")}}
 
-    state: Bye
-        intent!: /пока
-        a: Пока пока
+    state: Week Day
+        q!: *(~день) * (недел*)*
+        script: 
+            $temp.date = currentDate();
+        a: {{capitalize($temp.date.format("dddd"))}}
 
     state: NoMatch
         event!: noMatch
         a: Я не понял. Вы сказали: {{$request.query}}
-
-    state: Match
-        event!: match
-        a: {{$context.intent.answer}}
